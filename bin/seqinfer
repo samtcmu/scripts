@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ ${#} -lt 1 ]; then
+    printf "usage: seqinfer <a0> <a1> . . . \n"
+    printf "       Infers the sets {ai}_{i >= 0}\n"
+    exit
+fi
+
+# Put the input sequence into the input form of the inferj program.
+seq="{${1}"
+shift
+while [ ${#} -gt 0 ]; do
+    seq=${seq}", ${1}"
+    shift
+done
+seq=${seq}"}"
+
+/Users/samt/scripts/bin/infer "${seq}"
+

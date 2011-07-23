@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# @author Sam Tetruashvili (stetruas)
+# @author Fang Qiao (fqiao)
+# @file newfile.sh
+# @date date created: Sat Feb  7 15:50:29 EST 2009
+# @brief Creates the header for all new files.
+# 
+# This fle contains a script which will create a new file with a default
+# header.
+#
+# @date last modified: Thu Aug 19 14:28:21 PDT 2010
+#
+# @bug No known bugs.
+
+# First make sure that the user game us at least one file name.
+if [ ${#} -le 0 ]; then
+    printf "usage: newfile <file 1> <file 2> . . .\n"
+    printf "       The command will create <file 1>, <file 2>, . . . each with\n"
+    printf "       the appropriate header.\n"
+    exit
+fi
+
+# Create each file that the user requested to be created.
+for file in ${*}
+do
+    now=`date`
+
+    # If the current file we are trying to create already exists we should not
+    # re-create it.
+    if [ -f ${file} ]; then
+        printf "ERROR: ${file} already exits.\n"
+        continue
+    fi
+
+    # If ${file} is of the form dir1/ . . . /dirn/file then only print file as
+    # the name of the file.
+    filename=`echo ${file} | grep -o "[^/]*$"`
+
+    if [ "Makefile" = ${filename} ]; then
+        printf "# @author Sam Tetruashvili (samt@alumni.cmu.edu)\n" >> ${file}
+        printf "# @file ${filename}\n" >> ${file}
+        printf "# @date date created: ${now}\n" >> ${file}
+        printf "# @brief TODO <brief description>\n" >> ${file}
+        printf "\n" >> ${file}
+        printf "# @date last modified: ${now}\n" >> ${file}
+        printf "\n" >> ${file}
+    else
+        printf "/**\n" > ${file}
+        printf " * @author Sam Tetruashvili (samt@alumni.cmu.edu)\n" >> ${file}
+        printf " * @file ${filename}\n" >> ${file}
+        printf " * @date date created: ${now}\n" >> ${file}
+        printf " * @brief TODO <brief description>\n" >> ${file}
+        printf " * \n" >> ${file}
+        printf " * @date last modified: ${now}\n" >> ${file}
+        printf " * \n" >> ${file}
+        printf " * @bug No known bugs.\n" >> ${file}
+        printf " */\n\n" >> ${file}
+    fi
+done
+

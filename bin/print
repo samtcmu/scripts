@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# name: Sam Tetruashvili
+# file: print.sh
+# date created: Wed Jan 14 23:42:36 EST 2009
+# description: This script simply print all of the input files to Andrew Central B & W.
+#              lp is the UNIX printing command, for more information consult its man
+#              page.
+
+# last modified: Mon Aug 24 23:31:00 EDT 2009
+
+# Default options are set to print double sided.
+options="-o sides=two-sided-long-edge"
+
+# The name of the Andrew Central B&W print. To get a list of all the available
+# print use the lpq and lpstat commands.
+printer="-d canon_printer" 
+
+if [ ${#} -le 0 ]; then
+    printf "usage: print [options] <file1> <file2> . . . <filen>\n"
+    printf "       Prints the requested files using the given options.\n"
+    printf "       options: -s For single sided\n"
+    printf "                -c <num> For number of copies\n"
+    exit
+fi
+
+# Check to see if the user wants to change the options such that we print
+# single sided.
+if [ "${1}" = "-s" ]; then
+    # NULL options implies single sided output.
+    options=""
+
+    # This casues the first input to be thrown out so the for loop below doesn't
+    # try to print a file named "-s".
+    shift
+fi
+
+# Check to see how many copies should be printed.
+if [ "${1}" = "-c" ]; then
+    options=${options}" -n "${2}
+
+    shift;
+    shift;
+fi
+
+# Print each of the input files with the desired options.
+while [ ${#} -gt 0 ];
+do
+    echo ${1}
+    file=${1}
+
+    printf "Printing %s\n    " "${file}"
+    lp ${printer} ${options} "${file}"
+
+    shift
+done
+

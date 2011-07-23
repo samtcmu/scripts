@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ ${#} -ne 2 ]; then
+    printf "usage: search <key> <dir>\n"
+    exit
+fi
+
+echo ${1}
+grep -H -n -r --color "${1}" ${2}
+

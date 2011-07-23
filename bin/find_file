@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ ${#} -ne 2 ]; then
+    printf "usage: locate <file_regex> <dir>\n"
+    exit
+fi
+
+if [ ${2} = "/" ]; then
+    for i in `ls ${2}`; do
+        if [ ${i} = "afs" ]; then
+            continue;
+        fi
+        find "/"${i} | grep --color ${1}
+    done
+    exit
+fi
+
+find ${2} | grep --color ${1}
+

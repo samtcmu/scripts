@@ -1,0 +1,74 @@
+#!/bin/sh
+
+# name: Sam Tetruashvili (samt@alumni.cmu.edu)
+# title: mkdir-seq
+# date created: Sat Jul 24 13:26:37 PDT 2010
+# description: Creates a sequence of directories like hw1, hw2, hw3.
+
+# last modified: Sat Jul 24 13:26:37 PDT 2010
+
+# Helper function that computes the logarithm.
+log() {
+    if [ ${#} -lt 1 -o ${#} -gt 2 ]; then
+        exit -1
+    fi
+
+    if [ ${#} -eq 1 ]; then
+        BASE=2
+        NUM=${1}
+    else
+        BASE=${1}
+        NUM=${2}
+    fi
+
+    # Compute the base ${BASE} logarithm of ${NUM} rounded down to the nearest integer.
+    printf "%d" `echo "l(${NUM})/l(${BASE})" | bc -l | sed 's/\..*$//'`
+}
+
+# Make sure that we are given the proper input.
+if [ ${#} -le 1 -o ${#} -ge 4 ]; then 
+    printf "usage: mkdir-seq <dir> <low> <high>\n"
+    printf "       Creates directories from <dir><low>, <dir><low + 1>, . . . , <dir><high>.\n"
+    printf "usage: mkdir-seq <dir> <high>\n"
+    printf "       Creates directories from <dir><1>, <dir><2>, . . . , <dir><high>.\n"
+    exit -1
+fi
+
+# Get the name of the sequence of directories along with the upper and lower bounds.
+DIR=${1}
+if [ ${#} -eq 2 ]; then
+    LOW=1
+    HIGH=${2}
+else
+    LOW=${2}
+    HIGH=${3}
+fi
+
+X=`log 10 ${HIGH}`
+NUM_DIGITS=`expr ${X} + 1`
+
+X=${LOW}
+while [ ${X} -le ${HIGH} ]; do
+    # Calculate the number of zeroes that should be prepended to the number
+    # of the current directory in the sequence.
+    Y=`log 10 ${X}`
+    Z=`expr ${Y} + 1`
+    NUM_ZEROES=`expr ${NUM_DIGITS} - ${Z}`
+
+    # Make a string of that many zeroes.
+    if [ ${NUM_ZEROES} -gt 0 ]; then
+        ZEROES=`printf "%0${NUM_ZEROES}d" 0`
+    else
+        ZEROES=""
+    fi
+
+    # Create the appropriate directory.
+    DIRNAME=${DIR}${ZEROES}${X}
+    mkdir ${DIRNAME}
+
+    X=`expr ${X} + 1`
+done
+
+exit 0
+
+

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ ${#} -lt 1 ]; then
+    printf "usage: stubs <file1.h> <file2.h> . . . <filen.h>\n"
+fi
+
+for header in ${@}
+do
+    grep "^[^ ].* .*(.*);$" ${header} | /Users/samt/scripts/code/stubs/stubs
+done
+

@@ -1,0 +1,59 @@
+#!/bin/sh
+
+# name: Sam Tetruashvili
+# title: sync-dir
+# date created: Fri Jul  2 01:31:04 PDT 2010
+# description: Meant to sync the contents of two directories. Originally intended
+#              to sync my research paper collection on theory to that on gauss.
+#              These are the names of my Macbook Pro and iPad respectively.
+
+# last modified: Fri Jul  2 01:31:04 PDT 2010 
+
+if [ ${#} -ne 2 ]; then
+    printf "usage: sync-dir <dir1> <dir2>\n"
+    printf "       Stores the union of <dir1> and <dir2> in both directories based only on file names.\n"
+    exit -1
+fi
+
+DIR1=`echo ${1} | sed 's/\/*$//'`
+DIR2=`echo ${2} | sed 's/\/*$//'`
+
+# Make sure the two inputs are actually directories on the current file system
+# and writeable.
+if [ -d ${1} -a -w ${1} -a -d ${2} -a -w ${2} ]; then
+    # First find the files that are different. For now it is good enough to do
+    # this on a file name basis.
+    FILES=`find ${1} ${2} | sed 's/\/\/*/\//g'`
+    DIFFS=""
+    for i in ${FILES}; do
+        FILE=`echo ${i#${DIR1}}`
+        if [ "${FILE}" = "${i}" ]; then
+            FILE=`echo ${i#${DIR2}}`
+        fi
+        FILE=`echo ${FILE} | sed 's/\///'`
+
+        # Don't sync the .DS_Store files.
+        if [ "${FILE}" != ".DS_Store" ]; then
+            DIFFS=${DIFFS}${FILE}"\n"
+        fi
+    done
+    DIFFS=`echo ${DIFFS} | sort -n | uniq -u`
+    echo ${DIFFS}
+
+    if [ "${DIFFS}" = "" ]; then
+        printf "The input directories are already in sync.\n"
+    fi
+
+    # Now sync the two directories.
+    for i in ${DIFFS}; do
+        if [ -f ${DIR1}/${i} ]; then
+            cp -v ${DIR1}/${i} ${DIR2}
+        else
+            cp -v ${DIR2}/${i} ${DIR1}
+        fi
+    done
+else
+    printf "At least one of the input directories does not exist or is not writeable.\n"
+    exit -2
+fi
+

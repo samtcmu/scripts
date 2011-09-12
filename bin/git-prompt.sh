@@ -50,7 +50,7 @@ function parse_git_branch {
     fi
 }
  
-function prompt_symbol () {
+function git_prompt_symbol () {
     # Set color of dollar prompt based on return value of previous command.
     if test $1 -eq 0
     then
@@ -60,9 +60,7 @@ function prompt_symbol () {
     fi
 }
  
-function prompt_func () {
+function git_prompt_func () {
     last_return_value=$?
-    PS1="\u$(parse_git_branch)$(prompt_symbol $last_return_value) "
+    PS1="\u@\h$(parse_git_branch)$(git_prompt_symbol $last_return_value) "
 }
- 
-PROMPT_COMMAND=prompt_func

@@ -7,42 +7,57 @@
 # TODO(samt): Automatically install InsomniaX.
 # TODO(samt): Automatically install 2Up.
 
+function install_package() {
+    package=${1}
+    port install ${package}
+}
+
+function create_symlink() {
+    src=${1}
+    destination=${2}
+    if [ ! -h ${destination} ]; then
+        ln -s ${src} ${dest}
+    fi
+}
+
 echo step 1: config directory
 CONFIG_DIR=~/dropbox/config
-ln -s ${CONFIG_DIR} ~/config
+create_symlink ${CONFIG_DIR} ~/config
 
 echo step 2: home directory structure
 for dir in Desktop Documents Downloads Library Movies Music Pictures Public; do
     lowercase_dir=`echo ${dir} | tr '[:upper:]' '[:lower:]'`
-    mv ~/${dir} ~/${lowercase_dir}
+    if [ -d ~/${dir} ]; then
+        mv ~/${dir} ~/${lowercase_dir}
+    fi
 done
 
 echo step 3: home directory symlinks
-ln -s ~/dropbox/private ~/private
-ln -s ~/gdrive/google ~/private/google
+create_symlink ~/dropbox/private ~/private
+create_symlink ~/gdrive/google ~/private/google
 
 echo step 4: bash
-ln -s ~/config/dotfiles/.bash_profile ~/.bash_profile
+create_symlink ~/config/dotfiles/.bash_profile ~/.bash_profile
 
 echo step 5: vim
-ln -s ~/config/dotfiles/.vimrc ~/.vimrc
-ln -s ~/config/dotfiles/.vim ~/.vim
+create_symlink ~/config/dotfiles/.vimrc ~/.vimrc
+create_symlink ~/config/dotfiles/.vim ~/.vim
 
 echo step 6: git
-port install git-core
-ln -s ~/config/dotfiles/.gitconfig ~/.gitconfig
-ln -s ~/config/dotfiles/.gitignore ~/.gitignore
+install_package git-core
+create_symlink ~/config/dotfiles/.gitconfig ~/.gitconfig
+create_symlink ~/config/dotfiles/.gitignore ~/.gitignore
 
 echo step 7: tmux
-port install tmux
-ln -s ~/config/dotfiles/.tmux.conf ~/.tmux.conf
+install_package tmux
+create_symlink ~/config/dotfiles/.tmux.conf ~/.tmux.conf
 
 echo step 8: gnuplot
-port install gnuplot
+install_package gnuplot
 # TODO(samt): .gnuplotrc
 
 echo step 9: sqlite3
-ln -s ~/config/dotfiles/.sqliterc ~/.sqliterc
+create_symlink ~/config/dotfiles/.sqliterc ~/.sqliterc
 
 echo step 10: wget
-port install wget
+install_package wget

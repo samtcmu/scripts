@@ -23,9 +23,9 @@ function is_git_repository {
 function parse_git_branch {
     is_git_repository || return 1
     git_status="$(git status 2> /dev/null)"
-    branch_pattern="^# On branch ([^${IFS}]*)"
-    remote_pattern="# Your branch is (.*) of"
-    diverge_pattern="# Your branch and (.*) have diverged"
+    branch_pattern="^On branch ([^${IFS}]*)"
+    remote_pattern="Your branch is (.*) of"
+    diverge_pattern="Your branch and (.*) have diverged"
     if [[ ${git_status} =~ "working directory clean" ]]; then
         state="${LIGHT_GREEN}"
     elif [[ ${git_status} =~ "Untracked files" ]]; then

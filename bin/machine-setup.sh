@@ -5,7 +5,7 @@
 # TODO(samt): Automatically install macports.
 # TODO(samt): Automatically install LaTeX.
 # TODO(samt): Automatically install InsomniaX.
-# TODO(samt): Automatically install 2Up.
+# TODO(samt): Automatically install 2-Up.
 
 function install_package() {
     package=${1}
@@ -52,12 +52,17 @@ echo step 7: tmux
 install_package tmux
 create_symlink ~/config/dotfiles/.tmux.conf ~/.tmux.conf
 
-echo step 8: gnuplot
-install_package gnuplot
-# TODO(samt): .gnuplotrc
-
-echo step 9: sqlite3
+echo step 8: sqlite3
 create_symlink ~/config/dotfiles/.sqliterc ~/.sqliterc
+
+echo step 9: gnuplot
+install_package gnuplot
 
 echo step 10: wget
 install_package wget
+
+echo step 11: smlnj
+install_package smlnj
+
+echo step 12: rlwrap
+install_package rlwrap

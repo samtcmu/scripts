@@ -1,0 +1,4 @@
+#!/bin/sh
+
+expr=${@}
+python -c "print ${expr}"

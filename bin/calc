@@ -1,4 +1,4 @@
 #!/bin/sh
 
 expr=`echo ${@} | sed 's/,//g'`
-python -c "print \"{:,}\".format(${expr})"
+python2.7 -c "print \"{:,}\".format(${expr})"
